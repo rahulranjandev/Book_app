@@ -1,12 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask.wrappers import Request
 import mysql.connector
-from mysql.connector.pooling import PooledMySQLConnection
 
 app = Flask(__name__)
 
+# Config Sql
 mydb = mysql.connector.connect(
-    host="20.121.202.30",
+    host="20.228.144.187",
     user="root",
     password="Passwd@123r",
     port=3306,
@@ -16,13 +16,13 @@ mydb = mysql.connector.connect(
 print(mydb)
 mycursor = mydb.cursor()
 
+# Redirect Home
 
 @app.route("/")
 def index():
     return redirect(url_for('list_book'))
 
 # Books List
-
 
 @app.route("/list_book", methods=['GET', 'POST'])
 def list_book():
@@ -69,6 +69,7 @@ def high_low():
 
     return render_template("/list_book.html", data=myresult)
 
+# Add 
 
 @app.route("/add_book", methods=['GET', 'POST'])
 def add_book():
@@ -96,6 +97,7 @@ def add_book():
 
     return render_template("/add_book.html")
 
+# Edit 
 
 @app.route("/edit_book/<id>", methods=['GET', 'POST'])
 def edit_book(id):
@@ -125,6 +127,7 @@ def edit_book(id):
         print(read)
         return render_template("/edit_book.html", book=read)
 
+# Delete
 
 @app.route("/delete_book/<id>", methods=['POST'])
 def delete_book(id):
@@ -135,6 +138,7 @@ def delete_book(id):
         mydb.commit()
         return redirect(url_for("list_book"))
 
+# Search
 
 @app.route("/search")
 def search():
@@ -153,4 +157,4 @@ def search():
 
 
 if __name__ == '__main__':
-    app.run(port=5002, debug=True)
+    app.run(debug=True)
