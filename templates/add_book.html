@@ -1,38 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Books</title>
-</head>
-<body>
-    <!-- Menu -->
-    <a href="/list_book">List Books</a>
-    <a href="/add_book">Add Books</a>
-    <!-- Menu -->
-    <br><br>
+{% extends 'layout.html' %} {% block body %}
+
+<br />
+<div class="row mt-2">
+  <div class="col">
     <form action="" method="post">
-        <label for="">
-            Book name
-        </label>
-        <input type="text" name="Book_name">
-        <br><br>
-        <label for="">
-            Author name
-        </label>
-        <input type="text" name="Author_name">
-        <br><br>
-        <label for="">
-            Book Pages
-        </label>
-        <input type="text" name="Book_pages">
-        <br><br>
-        <label for="">
-            Book Price
-        </label>
-        <input type="text" name="Book_price">
-        <br><br>
-        <button type="submit">Submit</button>
+      <div class="form-group">
+        <label for=""> Book name </label>
+        <input type="text" class="form-control" name="Book_name" />
+      </div>
+      <div class="form-group">
+        <label for=""> Author name </label>
+        <input type="text" class="form-control" name="Author_name" />
+      </div>
+      <div class="form-group">
+        <label for=""> Book Pages </label>
+        <input type="text" class="form-control" name="Book_pages" />
+      </div>
+      <div class="form-group">
+        <label for=""> Book Price </label>
+        <input type="text" class="form-control" name="Book_price" />
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-lg btn-block">
+        Submit
+      </button>
     </form>
-</html>
+  </div>
+  <div class="col"></div>
+</div>
+
+{% endblock %}

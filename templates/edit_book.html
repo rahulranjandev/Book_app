@@ -1,34 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit</title>
-</head>
-<body>
-    <!-- Menu -->
-    <a href="/list_book">List Books</a>
-    <a href="/add_book">Add Books</a>
-    <!-- Menu -->
-    <br><br>
+{% extends 'layout.html' %} {% block body %}
+
+<br />
+
+<div class="row mb-2">
+  <div class="col">
     <form action="" method="post">
-        <label for="">
-            Book name
-        </label>
-        <input type="text" name="Book_name" value="{{book[1]}}">
-        <br><br>
-        <label for="">
-            Book Pages
-        </label>
-        <input type="text" name="Book_pages" value="{{book[2]}}">
-        <br><br>
-        <label for="">
-            Book Price
-        </label>
-        <input type="text" name="Book_price" value="{{book[3]}}">
-        <br><br>
-        <button type="submit">Update</button>
+      <div class="form-group">
+        <label for=""> Book name </label>
+        <input
+          type="text"
+          class="form-control"
+          name="Book_name"
+          value="{{book[1]}}"
+        />
+      </div>
+      <div class="form-group">
+        <label for=""> Book name </label>
+        <input
+          type="text"
+          class="form-control"
+          name="Author_name"
+          value="{{book[2]}}"
+        />
+      </div>
+      <div class="form-group">
+        <label for=""> Book Pages </label>
+        <input
+          type="text"
+          class="form-control"
+          name="Book_pages"
+          value="{{book[3]}}"
+        />
+      </div>
+      <div class="form-group">
+        <label for=""> Book Price </label>
+        <input
+          type="text"
+          class="form-control"
+          name="Book_price"
+          value="{{book[4]}}"
+        />
+      </div>
+
+      <button type="submit" class="btn btn-success btn-lg btn-block">
+        Update
+      </button>
     </form>
-</body>
-</html>
+  </div>
+  <div class="col"></div>
+</div>
+
+{% endblock %}

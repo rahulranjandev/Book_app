@@ -1,44 +1,89 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>List Book</title>
-  </head>
-  <body>
-    <!-- Menu -->
-    <a href="/list_book">List Book</a>
-    <a href="/add_book">Add Book</a>
-    <!-- Menu -->
-    <br />
-    <br />
-    <table>
-      <tr>
-        <th>ID</th>
-        <th>Book Name</th>
-        <th>Author Name</th>
-        <th>Book Pages</th>
-        <th>Book Price</th>
-        <th>Action</th>
-      </tr>
-      {% for item in data %}
+{% extends 'layout.html' %} {% block body %}
 
-      <tr>
-        <td>{{item[0]}}</td>
-        <td>{{item[1]}}</td>
-        <td>{{item[2]}}</td>
-        <td>{{item[3]}}</td>
-        <td>{{item[4]}}</td>
-        <td>
-          <a href="/edit_book/{{item[0]}}">Edit Book</a>
-          <form action="/delete_book/{{item[0]}}" method="post">
-            <button type="submit">Delete</button>
-          </form>
-        </td>
-      </tr>
+<br />
+<table class="table table-borderless">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Book Name</th>
+      <th scope="col">Author Name</th>
+      <th scope="col">Book Pages</th>
+      <th scope="col">Book Price</th>
+      <th scope="col" style="text-align: center">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in data %}
 
-      {% endfor %}
-    </table>
-  </body>
-</html>
+    <tr>
+      <th scope="row">{{item[0]}}</th>
+      <td>{{item[1]}}</td>
+      <td>{{item[2]}}</td>
+      <td>{{item[3]}} Pages</td>
+      <td>₹ {{item[4]}}</td>
+      <td>
+        <a
+          href="edit_book/{{item[0]}}"
+          class="btn btn-outline-warning"
+          role="button"
+          aria-pressed="true"
+          >Edit
+        </a>
+        <a
+          href="/delete_book/{{item[0]}}"
+          class="btn btn-outline-danger"
+          role="button"
+          aria-pressed="true"
+        >
+          Delete
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<nav aria-label="Page navigation">
+  <ul class="pagination justify-content-center">
+    {% if current_page == 1 %}
+    <li class="page-item disabled">
+      <a class="page-link" href="#">Previous</a>
+    </li>
+    {% else %}
+    <li class="page-item">
+      <a class="page-link" href="/list_book?page_no={{current_page - 1}}">
+        Previous
+      </a>
+    </li>
+    {% endif %} {% if current_page == 1 %}
+    <li class="page-item disabled"><a class="page-link" href="#">1</a></li>
+    {% else %}
+    <li class="page-item">
+      <a class="page-link" href="/list_book?page_no=1">1</a>
+    </li>
+    {% endif %} {% if current_page == 2 %}
+    <li class="page-item disabled"><a class="page-link" href="#">2</a></li>
+    {% else %}
+    <li class="page-item">
+      <a class="page-link" href="/list_book?page_no=2">2</a>
+    </li>
+    {% endif %} {% if current_page == 3 %}
+    <li class="page-item disabled"><a class="page-link" href="#">3</a></li>
+    {% else %}
+    <li class="page-item">
+      <a class="page-link" href="/list_book?page_no=3">3</a>
+    </li>
+    {% endif %} {% if current_page == 3 %}
+
+    <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+    {% else %}
+    <li class="page-item">
+      <a class="page-link" href="/list_book?page_no={{current_page + 1}}">
+        Next
+      </a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+
+{% endblock %}

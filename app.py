@@ -6,7 +6,7 @@ from mysql.connector.pooling import PooledMySQLConnection
 app = Flask(__name__)
 
 mydb = mysql.connector.connect(
-    host="20.228.144.187",
+    host="20.121.202.30",
     user="root",
     password="Passwd@123r",
     port=3306,
@@ -26,13 +26,37 @@ def index():
 
 @app.route("/list_book", methods=['GET', 'POST'])
 def list_book():
-    mycursor.execute("SELECT * FROM books_list")
+    current_page = request.args.get('page_no')
+
+    print("PageNo:", current_page)
+    sql = ""
+    limit = 5
+    offset = 0
+
+    if current_page is None:
+        current_page = 1
+        offset = 0
+        sql = "SELECT * FROM books_list LIMIT %s, %s "
+
+    else:
+        current_page = int(current_page)
+        offset = (current_page-1) * limit
+
+        sql = "SELECT * FROM books_list LIMIT %s, %s "
+
+    val = (offset, limit)
+    # mycursor.execute(sql)
+    mycursor.execute(sql, val)
+
+    print(mycursor.statement)
+
+    # mycursor.execute("SELECT * FROM books_list")
 
     myresult = mycursor.fetchall()
 
     # print(myresult[0])
 
-    return render_template("/list_book.html", data=myresult)
+    return render_template("/list_book.html", data=myresult, current_page=current_page)
 
 
 @app.route("/high_low", methods=['GET', 'POST'])
@@ -112,5 +136,21 @@ def delete_book(id):
         return redirect(url_for("list_book"))
 
 
+@app.route("/search")
+def search():
+    cast = request.args.get('search')
+
+    print("Search:", cast)
+
+    mycursor.execute(
+        "SELECT * FROM books_list WHERE Book_name LIKE CONCAT('%', %s, '%')", (cast,)
+    )
+    print(mycursor.statement)
+
+    myresult = mycursor.fetchall()
+
+    return render_template("/list_book.html", data=myresult)
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=5002, debug=True)
