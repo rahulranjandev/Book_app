@@ -1,35 +1,32 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask.wrappers import Request
 import mysql.connector
-from config import dbHost, dbuser, dbpasswd, dbport, db 
+from config import dbHost, dbuser, dbpasswd, dbport, db
 
 app = Flask(__name__)
 
 # Config Sql
-mydb = mysql.connector.connect(
-    host=dbHost,
-    user=dbuser,
-    password=dbpasswd,
-    port=dbport,
-    database=db
-)
+mydb = mysql.connector.connect(host=dbHost, user=dbuser, password=dbpasswd, port=dbport, database=db)
 
-print(mydb)
 mycursor = mydb.cursor()
 
-# Redirect Home
 
+# Redirect Home Page
 @app.route("/")
 def index():
-    return redirect(url_for('list_book'))
+    return redirect(url_for("list_book"))
+
+
+# Favicon Icon
+@app.route("/favicon.ico")
+def favicon():
+    return redirect(url_for("static", filename="favicon.ico"))
+
 
 # Books List
-
-@app.route("/list_book", methods=['GET', 'POST'])
+@app.route("/list_book", methods=["GET", "POST"])
 def list_book():
-    current_page = request.args.get('page_no')
+    current_page = request.args.get("page_no")
 
-    print("PageNo:", current_page)
     sql = ""
     limit = 5
     offset = 0
@@ -41,7 +38,7 @@ def list_book():
 
     else:
         current_page = int(current_page)
-        offset = (current_page-1) * limit
+        offset = (current_page - 1) * limit
 
         sql = "SELECT * FROM books_list LIMIT %s, %s "
 
@@ -49,41 +46,31 @@ def list_book():
     # mycursor.execute(sql)
     mycursor.execute(sql, val)
 
-    print(mycursor.statement)
-
     # mycursor.execute("SELECT * FROM books_list")
 
     myresult = mycursor.fetchall()
 
-    # print(myresult[0])
-
     return render_template("/list_book.html", data=myresult, current_page=current_page)
 
 
-@app.route("/high_low", methods=['GET', 'POST'])
+# Low to High
+@app.route("/high_low", methods=["GET", "POST"])
 def high_low():
     mycursor.execute("SELECT * FROM books_list ORDER BY book_price DESC")
 
     myresult = mycursor.fetchall()
 
-    print(myresult[0])
-
     return render_template("/list_book.html", data=myresult)
 
-# Add 
 
-@app.route("/add_book", methods=['GET', 'POST'])
+# Add Book
+@app.route("/add_book", methods=["GET", "POST"])
 def add_book():
     if request.method == "POST":
-        book_name = request.form.get('Book_name')
-        author_name = request.form.get('Author_name')
-        book_pages = request.form.get('Book_pages')
-        book_price = request.form.get('Book_price')
-
-        print(book_name)
-        print(author_name)
-        print(book_pages)
-        print(book_price)
+        book_name = request.form.get("Book_name")
+        author_name = request.form.get("Author_name")
+        book_pages = request.form.get("Book_pages")
+        book_price = request.form.get("Book_price")
 
         sql = "INSERT INTO books_list (book_name, author_name, book_pages, book_price) VALUES (%s, %s, %s, %s)"
         val = (book_name, author_name, book_pages, book_price)
@@ -92,23 +79,19 @@ def add_book():
 
         mydb.commit()
 
-        print(mycursor.rowcount, "record inserted.")
-
-        return redirect(url_for('list_book'))
+        return redirect(url_for("list_book"))
 
     return render_template("/add_book.html")
 
-# Edit 
 
-@app.route("/edit_book/<id>", methods=['GET', 'POST'])
+# Edit
+@app.route("/edit_book/<id>", methods=["GET", "POST"])
 def edit_book(id):
-    pass
-    print(id)
     if request.method == "POST":
-        book_name = request.form.get('Book_name')
-        author_name = request.form.get('Author_name')
-        book_pages = request.form.get('Book_pages')
-        book_price = request.form.get('Book_price')
+        book_name = request.form.get("Book_name")
+        author_name = request.form.get("Author_name")
+        book_pages = request.form.get("Book_pages")
+        book_price = request.form.get("Book_price")
 
         sql = "UPDATE books_list SET book_name = %s, author_name = %s, book_pages= %s, book_price=%s WHERE id = %s"
 
@@ -125,31 +108,30 @@ def edit_book(id):
         val = (id,)
         mycursor.execute(sql, val)
         read = mycursor.fetchone()
-        print(read)
+
         return render_template("/edit_book.html", book=read)
 
-# Delete
 
-@app.route("/delete_book/<id>", methods=['POST'])
+# Delete
+@app.route("/delete_book/<id>", methods=["POST"])
 def delete_book(id):
     if request.method == "POST":
         sql = "DELETE FROM books_list WHERE id = %s"
         val = (id,)
+
         mycursor.execute(sql, val)
         mydb.commit()
+
         return redirect(url_for("list_book"))
 
-# Search
 
+# Search
 @app.route("/search")
 def search():
-    cast = request.args.get('search')
+    cast = request.args.get("search")
 
-    print("Search:", cast)
+    mycursor.execute("SELECT * FROM books_list WHERE Book_name LIKE CONCAT('%', %s, '%')", (cast,))
 
-    mycursor.execute(
-        "SELECT * FROM books_list WHERE Book_name LIKE CONCAT('%', %s, '%')", (cast,)
-    )
     print(mycursor.statement)
 
     myresult = mycursor.fetchall()
@@ -157,5 +139,5 @@ def search():
     return render_template("/list_book.html", data=myresult)
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(port=5001, debug=True)
